@@ -14,7 +14,6 @@ class TelegramSettingsScreen extends ConsumerStatefulWidget {
 
 class _TelegramSettingsScreenState
     extends ConsumerState<TelegramSettingsScreen> {
-  late TextEditingController _botTokenController;
   late TextEditingController _chatIdController;
   bool _isEnabled = false;
   bool _isTesting = false;
@@ -22,13 +21,11 @@ class _TelegramSettingsScreenState
   @override
   void initState() {
     super.initState();
-    _botTokenController = TextEditingController();
     _chatIdController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final settings = ref.read(telegramSettingsProvider).value;
       if (settings != null) {
-        _botTokenController.text = settings.botToken;
         _chatIdController.text = settings.chatId;
         _isEnabled = settings.isEnabled;
         setState(() {});
@@ -38,20 +35,18 @@ class _TelegramSettingsScreenState
 
   @override
   void dispose() {
-    _botTokenController.dispose();
     _chatIdController.dispose();
     super.dispose();
   }
 
   Future<void> _saveSettings() async {
     final settings = TelegramSettings(
-      botToken: _botTokenController.text.trim(),
       chatId: _chatIdController.text.trim(),
       isEnabled: _isEnabled,
     );
 
     if (!settings.isValid) {
-      _showMessage('الرجاء إدخال توكن البوت ومعرف الدردشة');
+      _showMessage('الرجاء إدخال معرف الدردشة (Chat ID)');
       return;
     }
 
@@ -104,39 +99,39 @@ class _TelegramSettingsScreenState
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Card(
+                color: Colors.blue.shade50,
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'كيفية الحصول على المعلومات:',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
+                      Row(
+                        children: [
+                          Icon(Icons.info_outline, color: Colors.blue.shade700),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'البوت مُعد مسبقاً',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 12),
-                      _buildInfoStep('1', 'افتح @BotFather في تلكرام'),
-                      _buildInfoStep('2', 'أرسل /newbot لإنشاء بوت جديد'),
-                      _buildInfoStep('3', 'احفظ توكن البوت (Bot Token)'),
-                      _buildInfoStep('4', 'افتح @userinfobot للحصول على معرف الدردشة (Chat ID)'),
+                      const Text(
+                        'لا تحتاج لإنشاء بوت جديد. فقط احصل على معرف الدردشة الخاص بك:',
+                        style: TextStyle(fontSize: 14),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildInfoStep('1', 'افتح @userinfobot في تلكرام'),
+                      _buildInfoStep('2', 'سيرسل لك معرف الدردشة (Chat ID)'),
+                      _buildInfoStep('3', 'انسخ الرقم وأدخله أدناه'),
                     ],
                   ),
                 ),
               ),
               const SizedBox(height: 24),
-              TextField(
-                controller: _botTokenController,
-                decoration: const InputDecoration(
-                  labelText: 'توكن البوت (Bot Token)',
-                  hintText: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11',
-                  border: OutlineInputBorder(),
-                  prefixIcon: Icon(Icons.key),
-                ),
-                textDirection: TextDirection.ltr,
-              ),
-              const SizedBox(height: 16),
               TextField(
                 controller: _chatIdController,
                 decoration: const InputDecoration(
