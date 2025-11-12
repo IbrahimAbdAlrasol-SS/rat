@@ -45,5 +45,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج للوصول إلى الكاميرا لالتقاط الصور</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>نحتاج للوصول إلى المعرض لحفظ الصور</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>نحتاج للوصول لحفظ الصور في المعرض</string>
 </dict>
 </plist>
