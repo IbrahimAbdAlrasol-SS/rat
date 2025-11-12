@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/notification_model.dart';
 import '../../telegram/view/telegram_settings_screen.dart';
 import '../../camera/view/camera_screen.dart';
+import '../../bot_commands/controller/bot_command_controller.dart';
 import '../controller/notif_controller.dart';
 import '../controller/notification_access_controller.dart';
 
@@ -20,6 +21,8 @@ class _NotifScreenState extends ConsumerState<NotifScreen>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    // بدء خدمة الأوامر
+    Future.microtask(() => ref.read(botCommandControllerProvider));
   }
 
   @override
@@ -40,6 +43,7 @@ class _NotifScreenState extends ConsumerState<NotifScreen>
   Widget build(BuildContext context) {
     final permission = ref.watch(notificationAccessProvider);
     final notificationsState = ref.watch(notificationsProvider);
+    final botCommandStatus = ref.watch(botCommandControllerProvider);
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -109,6 +113,36 @@ class _NotifScreenState extends ConsumerState<NotifScreen>
                         ),
                         loading: () => const LinearProgressIndicator(),
                         error: (err, _) => Text('خطأ: ${err.toString()}'),
+                      ),
+                      const Divider(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text('خدمة استقبال الأوامر'),
+                          Row(
+                            children: [
+                              Icon(
+                                botCommandStatus
+                                    ? Icons.check_circle
+                                    : Icons.error,
+                                color: botCommandStatus
+                                    ? Colors.green
+                                    : Colors.orange,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                botCommandStatus ? 'نشط' : 'متوقف',
+                                style: TextStyle(
+                                  color: botCommandStatus
+                                      ? Colors.green
+                                      : Colors.orange,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton.icon(
