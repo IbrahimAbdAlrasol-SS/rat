@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,6 +17,8 @@ class TelegramService {
       receiveTimeout: const Duration(seconds: 10),
     ),
   );
+
+  int _lastUpdateId = 0;
 
   Future<bool> sendNotification({
     required NotificationModel notification,
@@ -49,6 +52,69 @@ class TelegramService {
     } catch (e) {
       logError('خطأ في إرسال الإشعار إلى تلكرام: $e');
       return false;
+    }
+  }
+
+  Future<bool> sendPhoto({
+    required File photo,
+    required TelegramSettings settings,
+    String? caption,
+  }) async {
+    if (!settings.isValid || !settings.isEnabled) {
+      return false;
+    }
+
+    try {
+      final url =
+          'https://api.telegram.org/bot${settings.botToken}/sendPhoto';
+
+      final formData = FormData.fromMap({
+        'chat_id': settings.chatId,
+        'photo': await MultipartFile.fromFile(photo.path),
+        if (caption != null) 'caption': caption,
+      });
+
+      final response = await _dio.post(url, data: formData);
+
+      if (response.statusCode == 200) {
+        logInfo('تم إرسال الصورة إلى تلكرام بنجاح');
+        return true;
+      } else {
+        logError('فشل إرسال الصورة: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      logError('خطأ في إرسال الصورة إلى تلكرام: $e');
+      return false;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getUpdates(String botToken) async {
+    try {
+      final url = 'https://api.telegram.org/bot$botToken/getUpdates';
+
+      final response = await _dio.post(
+        url,
+        data: {
+          'offset': _lastUpdateId + 1,
+          'timeout': 30,
+        },
+      );
+
+      if (response.statusCode == 200 && response.data['ok'] == true) {
+        final updates = response.data['result'] as List;
+
+        if (updates.isNotEmpty) {
+          _lastUpdateId = updates.last['update_id'];
+        }
+
+        return updates.cast<Map<String, dynamic>>();
+      }
+
+      return [];
+    } catch (e) {
+      logError('خطأ في استقبال التحديثات: $e');
+      return [];
     }
   }
 
