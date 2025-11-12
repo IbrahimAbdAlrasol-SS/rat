@@ -36,6 +36,8 @@ dependencies:
   flutter_background_service_android: ^6.2.2
   permission_handler: ^11.3.0
   dio: ^5.7.0
+  image_picker: ^1.2.1
+  path_provider: ^2.1.5
 
 dev_dependencies:
   flutter_test:
