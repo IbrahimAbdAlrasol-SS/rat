@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/notification_model.dart';
+import '../../../core/services/telegram_service.dart';
+import '../../../core/services/telegram_settings_service.dart';
 import '../repository/notif_repository.dart';
 
 final notificationsProvider =
@@ -29,9 +31,30 @@ class NotificationsController extends AsyncNotifier<List<NotificationModel>> {
     return const [];
   }
 
-  void _handleIncomingNotification(NotificationModel notification) {
+  Future<void> _handleIncomingNotification(NotificationModel notification) async {
     final current = state.value ?? const <NotificationModel>[];
     final updated = <NotificationModel>[notification, ...current];
     state = AsyncValue.data(updated.take(50).toList());
+
+    // إرسال الإشعار إلى تلكرام
+    _sendToTelegram(notification);
+  }
+
+  Future<void> _sendToTelegram(NotificationModel notification) async {
+    try {
+      final settingsService = ref.read(telegramSettingsServiceProvider);
+      final telegramService = ref.read(telegramServiceProvider);
+
+      final settings = await settingsService.getSettings();
+
+      if (settings.isValid && settings.isEnabled) {
+        await telegramService.sendNotification(
+          notification: notification,
+          settings: settings,
+        );
+      }
+    } catch (e) {
+      // تجاهل الأخطاء لعدم تعطيل التطبيق
+    }
   }
 }

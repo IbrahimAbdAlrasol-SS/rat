@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/notification_model.dart';
+import '../../telegram/view/telegram_settings_screen.dart';
 import '../controller/notif_controller.dart';
 import '../controller/notification_access_controller.dart';
 
@@ -42,7 +43,24 @@ class _NotifScreenState extends ConsumerState<NotifScreen>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(title: const Text('مراقب الإشعارات'), centerTitle: true),
+        appBar: AppBar(
+          title: const Text('مراقب الإشعارات'),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.telegram),
+              tooltip: 'إعدادات تلكرام',
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TelegramSettingsScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
