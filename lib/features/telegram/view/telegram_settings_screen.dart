@@ -26,7 +26,7 @@ class _TelegramSettingsScreenState
     _chatIdController = TextEditingController();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final settings = ref.read(telegramSettingsProvider).valueOrNull;
+      final settings = ref.read(telegramSettingsProvider).value;
       if (settings != null) {
         _botTokenController.text = settings.botToken;
         _chatIdController.text = settings.chatId;

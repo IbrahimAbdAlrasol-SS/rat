@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/models/telegram_settings.dart';
 import '../../../core/services/telegram_service.dart';
@@ -47,7 +48,7 @@ class TelegramSettingsController
   }
 
   Future<bool> testConnection() async {
-    final currentSettings = state.valueOrNull;
+    final currentSettings = state.value;
     if (currentSettings == null || !currentSettings.isValid) {
       return false;
     }
@@ -56,7 +57,7 @@ class TelegramSettingsController
   }
 
   Future<void> toggleEnabled(bool enabled) async {
-    final currentSettings = state.valueOrNull;
+    final currentSettings = state.value;
     if (currentSettings == null) return;
 
     final updatedSettings = currentSettings.copyWith(isEnabled: enabled);
