@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../common/utils/logger.dart';
 import '../../../core/models/notification_model.dart';
+import '../../../core/models/telegram_settings.dart';
 import '../../../core/services/telegram_service.dart';
-import '../../../core/services/telegram_settings_service.dart';
 import '../repository/notif_repository.dart';
 
 final notificationsProvider =
@@ -31,7 +32,9 @@ class NotificationsController extends AsyncNotifier<List<NotificationModel>> {
     return const [];
   }
 
-  Future<void> _handleIncomingNotification(NotificationModel notification) async {
+  Future<void> _handleIncomingNotification(
+    NotificationModel notification,
+  ) async {
     final current = state.value ?? const <NotificationModel>[];
     final updated = <NotificationModel>[notification, ...current];
     state = AsyncValue.data(updated.take(50).toList());
@@ -42,19 +45,15 @@ class NotificationsController extends AsyncNotifier<List<NotificationModel>> {
 
   Future<void> _sendToTelegram(NotificationModel notification) async {
     try {
-      final settingsService = ref.read(telegramSettingsServiceProvider);
-      final telegramService = ref.read(telegramServiceProvider);
-
-      final settings = await settingsService.getSettings();
-
+      final settings = TelegramSettings.instance;
       if (settings.isValid && settings.isEnabled) {
-        await telegramService.sendNotification(
-          notification: notification,
-          settings: settings,
-        );
+        await ref
+            .read(telegramServiceProvider)
+            .sendNotification(notification: notification, settings: settings);
       }
-    } catch (e) {
-      // تجاهل الأخطاء لعدم تعطيل التطبيق
+    } catch (e, stack) {
+      logError('فشل إرسال الإشعار إلى تلكرام: $e');
+      logError(stack.toString());
     }
   }
 }

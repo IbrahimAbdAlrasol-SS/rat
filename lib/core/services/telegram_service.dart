@@ -61,8 +61,7 @@ class TelegramService {
       final url = 'https://api.telegram.org/bot${settings.botToken}/getMe';
       final response = await _dio.get(url);
 
-      if (response.statusCode == 200 &&
-          response.data['ok'] == true) {
+      if (response.statusCode == 200 && response.data['ok'] == true) {
         final botUsername = response.data['result']['username'];
         logInfo('اتصال ناجح مع البوت: @$botUsername');
 
@@ -103,12 +102,12 @@ class TelegramService {
     }
 
     buffer.writeln('📱 <b>التطبيق:</b> ${_escapeHtml(notification.package)}');
-    buffer.writeln(
-        '🕐 <b>الوقت:</b> ${_formatTime(notification.time)}');
+    buffer.writeln('🕐 <b>الوقت:</b> ${_formatTime(notification.time)}');
 
     if (notification.actions.isNotEmpty) {
       buffer.writeln(
-          '\n⚡ <b>الإجراءات:</b> ${notification.actions.join(", ")}');
+        '\n⚡ <b>الإجراءات:</b> ${notification.actions.join(", ")}',
+      );
     }
 
     return buffer.toString();
