@@ -35,9 +35,12 @@ dependencies:
   flutter_background_service: ^5.0.1
   flutter_background_service_android: ^6.2.2
   permission_handler: ^11.3.0
+  camera: ^0.10.5+5
   dio: ^5.7.0
-  image_picker: ^1.2.1
   path_provider: ^2.1.5
+  device_info_plus: ^10.1.0
+  geolocator: ^11.1.0
+
 
 dev_dependencies:
   flutter_test:

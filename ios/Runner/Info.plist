@@ -51,5 +51,7 @@
 	<string>نحتاج للوصول إلى المعرض لحفظ الصور</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>نحتاج للوصول لحفظ الصور في المعرض</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>نحتاج لموقع الجهاز لإرساله عبر البوت</string>
 </dict>
 </plist>

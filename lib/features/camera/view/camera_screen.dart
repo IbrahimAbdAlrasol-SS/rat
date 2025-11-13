@@ -34,10 +34,7 @@ class CameraScreen extends ConsumerWidget {
               child: lastSelfie != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(14),
-                      child: Image.file(
-                        lastSelfie,
-                        fit: BoxFit.cover,
-                      ),
+                      child: Image.file(lastSelfie, fit: BoxFit.cover),
                     )
                   : Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -78,7 +75,9 @@ class CameraScreen extends ConsumerWidget {
                 onPressed: cameraState.isLoading
                     ? null
                     : () async {
-                        final controller = ref.read(cameraControllerProvider.notifier);
+                        final controller = ref.read(
+                          cameraControllerProvider.notifier,
+                        );
                         await controller.takeSelfie();
 
                         if (context.mounted) {
@@ -87,7 +86,9 @@ class CameraScreen extends ConsumerWidget {
                               if (file != null) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text('✅ تم التقاط الصورة وحفظها محلياً'),
+                                    content: Text(
+                                      '✅ تم التقاط الصورة وحفظها محلياً',
+                                    ),
                                     backgroundColor: Colors.green,
                                   ),
                                 );
@@ -122,7 +123,9 @@ class CameraScreen extends ConsumerWidget {
                       )
                     : const Icon(Icons.camera_alt, size: 28),
                 label: Text(
-                  cameraState.isLoading ? 'جاري التقاط الصورة...' : '📷 التقاط صورة سيلفي',
+                  cameraState.isLoading
+                      ? 'جاري التقاط الصورة...'
+                      : '📷 التقاط صورة سيلفي',
                   style: const TextStyle(fontSize: 18),
                 ),
               ),
@@ -147,7 +150,10 @@ class CameraScreen extends ConsumerWidget {
                     padding: const EdgeInsets.all(16.0),
                     child: Row(
                       children: [
-                        const Icon(Icons.photo_library, color: Colors.deepPurple),
+                        const Icon(
+                          Icons.photo_library,
+                          color: Colors.deepPurple,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           'الصور المحفوظة',
@@ -174,36 +180,35 @@ class CameraScreen extends ConsumerWidget {
 
                         return GridView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 16),
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                crossAxisSpacing: 8,
+                                mainAxisSpacing: 8,
+                              ),
                           itemCount: selfies.length,
                           itemBuilder: (context, index) {
                             final selfie = selfies[index];
                             return GestureDetector(
                               onTap: () {
-                                ref.read(lastSelfieProvider.notifier).state = selfie;
+                                ref.read(lastSelfieProvider.notifier).state =
+                                    selfie;
                               },
                               onLongPress: () {
                                 _showDeleteDialog(context, ref, selfie);
                               },
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8),
-                                child: Image.file(
-                                  selfie,
-                                  fit: BoxFit.cover,
-                                ),
+                                child: Image.file(selfie, fit: BoxFit.cover),
                               ),
                             );
                           },
                         );
                       },
-                      loading: () => const Center(child: CircularProgressIndicator()),
-                      error: (error, _) => Center(
-                        child: Text('خطأ في تحميل الصور: $error'),
-                      ),
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (error, _) =>
+                          Center(child: Text('خطأ في تحميل الصور: $error')),
                     ),
                   ),
                 ],
@@ -228,7 +233,9 @@ class CameraScreen extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () async {
-              await ref.read(cameraControllerProvider.notifier).deleteSelfie(file);
+              await ref
+                  .read(cameraControllerProvider.notifier)
+                  .deleteSelfie(file);
               if (context.mounted) {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(

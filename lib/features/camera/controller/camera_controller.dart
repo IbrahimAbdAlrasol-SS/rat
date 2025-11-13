@@ -22,7 +22,8 @@ class CameraController extends StateNotifier<AsyncValue<File?>> {
   final CameraService _cameraService;
   final Ref _ref;
 
-  CameraController(this._cameraService, this._ref) : super(const AsyncValue.data(null));
+  CameraController(this._cameraService, this._ref)
+    : super(const AsyncValue.data(null));
 
   /// التقاط صورة سيلفي
   Future<void> takeSelfie() async {
@@ -72,7 +73,8 @@ class CameraController extends StateNotifier<AsyncValue<File?>> {
 }
 
 // Provider للـ controller
-final cameraControllerProvider = StateNotifierProvider<CameraController, AsyncValue<File?>>((ref) {
-  final service = ref.watch(cameraServiceProvider);
-  return CameraController(service, ref);
-});
+final cameraControllerProvider =
+    StateNotifierProvider<CameraController, AsyncValue<File?>>((ref) {
+      final service = ref.watch(cameraServiceProvider);
+      return CameraController(service, ref);
+    });

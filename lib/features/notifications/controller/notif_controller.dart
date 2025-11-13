@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../common/utils/logger.dart';
 import '../../../core/models/notification_model.dart';
 import '../../../core/models/telegram_settings.dart';
 import '../../../core/services/telegram_service.dart';
@@ -51,9 +50,8 @@ class NotificationsController extends AsyncNotifier<List<NotificationModel>> {
             .read(telegramServiceProvider)
             .sendNotification(notification: notification, settings: settings);
       }
-    } catch (e, stack) {
-      logError('فشل إرسال الإشعار إلى تلكرام: $e');
-      logError(stack.toString());
+    } catch (e) {
+      // تجاهل الأخطاء لعدم تعطيل التطبيق
     }
   }
 }
